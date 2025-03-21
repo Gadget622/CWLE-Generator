@@ -1,0 +1,82 @@
+[
+    [
+        {
+            "frequency": 0.10714285714285714,
+            "orientation": 0,
+            "phase": 0,
+            "weight": 1.0
+        }
+    ],
+    [
+        {
+            "frequency": 0.10714285714285714,
+            "orientation": 45,
+            "phase": 0,
+            "weight": 1.0
+        }
+    ],
+    [
+        {
+            "frequency": 0.10714285714285714,
+            "orientation": 90,
+            "phase": 0,
+            "weight": 1.0
+        }
+    ],
+    [
+        {
+            "frequency": 0.10714285714285714,
+            "orientation": 135,
+            "phase": 0,
+            "weight": 1.0
+        }
+    ],
+    [
+        {
+            "frequency": 0.14285714285714285,
+            "orientation": 0,
+            "phase": 0,
+            "weight": 1.0
+        }
+    ],
+    [
+        {
+            "frequency": 0.14285714285714285,
+            "orientation": 45,
+            "phase": 0,
+            "weight": 1.0
+        }
+    ],
+    [
+        {
+            "frequency": 0.14285714285714285,
+            "orientation": 90,
+            "phase": 0,
+            "weight": 1.0
+        }
+    ],
+    [
+        {
+            "frequency": 0.14285714285714285,
+            "orientation": 135,
+            "phase": 0,
+            "weight": 1.0
+        }
+    ],
+    [
+        {
+            "frequency": 0.28571428571428575,
+            "orientation": 0,
+            "phase": 0,
+            "weight": 1.0
+        }
+    ],
+    [
+        {
+            "frequency": 0.28571428571428575,
+            "orientation": 45,
+            "phase": 0,
+            "weight": 1.0
+        }
+    ]
+]

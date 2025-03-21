@@ -1,0 +1,29 @@
+# CWLE Generator Configuration
+
+# Basic Parameters
+num_classes: 10         # Number of classes to generate CWLEs for
+img_size: 28            # Image size (width/height) - e.g., 28 for MNIST
+num_waves_per_cwle: 2   # Number of waves per CWLE
+
+# Parameter Constraints
+constraints:
+  min_frequency: 2      # Minimum frequency (scaled by img_size)
+  max_frequency: 0.5    # Maximum frequency (absolute)
+  min_orientation: 0    # Minimum orientation in degrees
+  max_orientation: 180  # Maximum orientation in degrees (exclusive)
+  min_weight: 0.05      # Minimum weight for a wave
+  max_weight: 1.0       # Maximum weight for a wave
+
+# Optimization Parameters
+optimization:
+  iterations: 500       # Number of optimization iterations
+  step_size: 0.05       # Step size for parameter updates
+  
+  # Force parameters (learning rates for each force)
+  forces:
+    centering: 0.01     # Pulls center of mass toward center of latent space
+    expanding: 0.02     # Pushes nodes away from center of mass
+    equalizing: 0.015   # Adjusts nodes to make distances more uniform
+  
+  # Stopping criteria
+  target_distinctness: 0.5  # Target minimum distance between any two CWLEs
