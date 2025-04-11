@@ -12,6 +12,7 @@ import os
 from cwle_generator import CWLEGenerator
 import json
 import numpy as np
+import yaml
 
 def parse_args():
     """Parse command line arguments."""
@@ -26,6 +27,8 @@ def parse_args():
                         help='Do not show convergence plots')
     parser.add_argument('--compare', type=str, default=None,
                         help='Path to file with handcrafted CWLEs for comparison')
+    parser.add_argument('--seed', type=int, default=None,
+                        help='Random seed to use (overrides config file setting)')
     return parser.parse_args()
 
 def main():
@@ -37,8 +40,32 @@ def main():
         print(f"Config file {args.config} not found.")
         return
     
+    # If a seed is provided via command line, update the config file in memory
+    if args.seed is not None:
+        # Load the config
+        with open(args.config, 'r') as f:
+            config = yaml.safe_load(f)
+        
+        # Update the random seed
+        config['random_seed'] = args.seed
+        print(f"Setting random seed to {args.seed} (from command line)")
+        
+        # Create a temporary config file
+        temp_config_path = args.config + '.tmp'
+        with open(temp_config_path, 'w') as f:
+            yaml.dump(config, f, default_flow_style=False)
+        
+        # Use this config file instead
+        config_path = temp_config_path
+    else:
+        config_path = args.config
+    
     # Initialize generator
-    generator = CWLEGenerator(args.config)
+    generator = CWLEGenerator(config_path)
+    
+    # Clean up temporary config file if it was created
+    if args.seed is not None and os.path.exists(temp_config_path):
+        os.remove(temp_config_path)
     
     # Generate CWLEs
     print("Generating CWLEs...")

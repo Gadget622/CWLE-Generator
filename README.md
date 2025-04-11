@@ -134,6 +134,85 @@ The algorithm optimizes CWLEs using the following steps:
    - Monitor minimum and average distances
    - Track center of mass position
 
+## Reproducibility with Random Seeds
+
+CWLE Generator now supports deterministic pattern generation through the use of random seeds, ensuring consistent results across multiple runs.
+
+### Configuration
+
+Random seeds can be set in two ways:
+
+1. **Via configuration file** (`cwle_config.yaml`):
+   ```yaml
+   # Basic Parameters
+   num_classes: 10
+   img_size: 32
+   num_waves_per_cwle: 1
+   random_seed: 42        # Set a specific seed for reproducible results
+   ```
+
+2. **Via command line** (overrides config file):
+   ```bash
+   python run_generator.py --seed 123
+   ```
+
+### Use Cases
+
+Setting a fixed random seed is valuable for several scenarios:
+
+- **Reproducible Research**: Generate the same patterns for scientific papers or experiments
+- **Development & Testing**: Debug or validate changes to the algorithm with consistent inputs
+- **Benchmarking**: Compare performance across different parameter configurations
+- **Demonstrations**: Show consistent results in presentations or documentation
+
+### Disabling Fixed Seeds
+
+To generate unique patterns each time (non-deterministic behavior), set the seed to `null`:
+
+```yaml
+random_seed: null   # Will use different randomization each run
+```
+
+### Visualization Consistency
+
+For the t-SNE visualization, you can also set a fixed random seed:
+
+```bash
+python visualization_tsne.py --tsne-seed 42
+```
+
+This ensures that the 2D projection coordinates remain consistent across visualizations, which is especially useful when making comparisons between different runs or parameter settings.
+
+### Example Usage Scenarios
+
+#### Scenario 1: Comparing optimization parameters
+
+```bash
+# First run with default parameters
+cp cwle_config.yaml config_default.yaml
+python run_generator.py --config config_default.yaml --output cwles_default.json --seed 42
+
+# Run with modified force parameters
+cp cwle_config.yaml config_modified.yaml
+# Edit config_modified.yaml to change force parameters
+python run_generator.py --config config_modified.yaml --output cwles_modified.json --seed 42
+
+# Compare results (same seed ensures fair comparison)
+python visualization_tsne.py --generated cwles_default.json --handcrafted cwles_modified.json
+```
+
+#### Scenario 2: Creating multiple reproducible sets
+
+```bash
+# Generate first set
+python run_generator.py --seed 100 --output cwles_set1.json
+
+# Generate second set
+python run_generator.py --seed 200 --output cwles_set2.json 
+
+# Each set will be different but internally consistent across multiple runs
+```
+
 ## Visualization
 
 The package includes tools to visualize:

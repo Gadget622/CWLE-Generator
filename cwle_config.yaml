@@ -2,14 +2,15 @@
 
 # Basic Parameters
 num_classes: 10         # Number of classes to generate CWLEs for
-img_size: 32           # Image size (width/height) - e.g., 28 for MNIST
+img_size: 32           # Image size (width/height) - e.g., 28 for MNIST, 32 for CIFAR-10
 num_waves_per_cwle: 1   # Number of waves per CWLE
+random_seed: 42         # Random seed for reproducibility (set to null for random behavior)
 
 # Parameter Constraints
 constraints:
   min_frequency: 2      # Minimum frequency (scaled by img_size)
   max_frequency: 0.5    # Maximum frequency (absolute)
-  min_orientation: 0    # Minimum orientation in degrees
+  min_orientation: 0    # Minimum orientation in degrees (inclusive)
   max_orientation: 180  # Maximum orientation in degrees (exclusive)
   min_weight: 0.05      # Minimum weight for a wave
   max_weight: 1.0       # Maximum weight for a wave

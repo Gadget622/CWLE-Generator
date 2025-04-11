@@ -6,6 +6,14 @@ import os
 import random
 from scipy.spatial.distance import pdist, squareform
 
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib import cm
+import yaml
+import os
+import random
+from scipy.spatial.distance import pdist, squareform
+
 class CWLEGenerator:
     """
     Composite Wave Label Encoding (CWLE) Generator
@@ -30,6 +38,13 @@ class CWLEGenerator:
         self.img_size = self.config['img_size']
         self.num_waves_per_cwle = self.config['num_waves_per_cwle']
         self.optimization_iterations = self.config['optimization']['iterations']
+        
+        # Set random seed if provided
+        self.random_seed = self.config.get('random_seed', None)
+        if self.random_seed is not None:
+            print(f"Using random seed: {self.random_seed}")
+            np.random.seed(self.random_seed)
+            random.seed(self.random_seed)
         
         # Parameter constraints
         self.constraints = self.config['constraints']

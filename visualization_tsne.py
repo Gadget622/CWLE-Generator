@@ -13,6 +13,7 @@ from sklearn.manifold import TSNE
 import json
 import argparse
 import os
+import yaml
 from cwle_generator import CWLEGenerator
 
 def parse_args():
@@ -26,6 +27,8 @@ def parse_args():
                         help='Path to handcrafted CWLEs file for comparison')
     parser.add_argument('--output', type=str, default='tsne_visualization.png',
                         help='Path to output visualization file')
+    parser.add_argument('--tsne-seed', type=int, default=42,
+                        help='Random seed for t-SNE')
     return parser.parse_args()
 
 def main():
@@ -74,9 +77,9 @@ def main():
     # Convert to numpy array
     data_array = np.array(data)
     
-    # Apply t-SNE
-    print("Applying t-SNE dimensionality reduction...")
-    tsne = TSNE(n_components=2, random_state=42, perplexity=5)
+    # Apply t-SNE with fixed random seed for reproducibility
+    print(f"Applying t-SNE dimensionality reduction with seed {args.tsne_seed}...")
+    tsne = TSNE(n_components=2, random_state=args.tsne_seed, perplexity=5)
     tsne_results = tsne.fit_transform(data_array)
     
     # Create visualization

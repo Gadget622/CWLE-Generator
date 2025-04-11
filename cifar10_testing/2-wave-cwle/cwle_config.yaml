@@ -9,7 +9,7 @@ num_waves_per_cwle: 2   # Number of waves per CWLE
 constraints:
   min_frequency: 2      # Minimum frequency (scaled by img_size)
   max_frequency: 0.5    # Maximum frequency (absolute)
-  min_orientation: 0    # Minimum orientation in degrees
+  min_orientation: 0    # Minimum orientation in degrees (inclusive)
   max_orientation: 180  # Maximum orientation in degrees (exclusive)
   min_weight: 0.05      # Minimum weight for a wave
   max_weight: 1.0       # Maximum weight for a wave
