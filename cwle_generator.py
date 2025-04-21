@@ -12,6 +12,7 @@ from matplotlib import cm
 import yaml
 import os
 import random
+import logging
 from scipy.spatial.distance import pdist, squareform
 
 class CWLEGenerator:
@@ -22,16 +23,28 @@ class CWLEGenerator:
     maximizing the distinctness between labels while adhering to constraints.
     """
     
-    def __init__(self, config_path):
+    def __init__(self, config_path, output_dir=None, logger=None):
         """
         Initialize the CWLE Generator with configuration from a YAML file.
         
         Args:
             config_path: Path to the YAML configuration file
+            output_dir: Directory to save outputs (default: None)
+            logger: Logger instance (default: None)
         """
+        # Setup output directory
+        self.output_dir = output_dir if output_dir else "."
+        
+        # Setup logger
+        self.logger = logger if logger else logging.getLogger(__name__)
+        
         # Load configuration
         with open(config_path, 'r') as f:
             self.config = yaml.safe_load(f)
+        
+        # Log configuration
+        self.logger.info(f"Configuration loaded from {config_path}")
+        self.logger.info(f"Configuration: {self.config}")
         
         # Extract configuration parameters
         self.num_classes = self.config['num_classes']
@@ -42,9 +55,11 @@ class CWLEGenerator:
         # Set random seed if provided
         self.random_seed = self.config.get('random_seed', None)
         if self.random_seed is not None:
-            print(f"Using random seed: {self.random_seed}")
+            self.logger.info(f"Using random seed: {self.random_seed}")
             np.random.seed(self.random_seed)
             random.seed(self.random_seed)
+        else:
+            self.logger.info("No random seed provided, using random behavior")
         
         # Parameter constraints
         self.constraints = self.config['constraints']
@@ -112,6 +127,7 @@ class CWLEGenerator:
             self._normalize_weights(cwle)
             cwles.append(cwle)
         
+        self.logger.info(f"Initialized {len(cwles)} CWLEs with {self.num_waves_per_cwle} waves each")
         return cwles
     
     def _normalize_weights(self, cwle):
@@ -383,6 +399,16 @@ class CWLEGenerator:
         Returns:
             list: Optimized CWLEs
         """
+        import time
+        start_time = time.time()
+        
+        self.logger.info(f"Starting optimization with {self.optimization_iterations} iterations")
+        
+        # Create a file for tracking convergence metrics
+        convergence_file = os.path.join(self.output_dir, "convergence_metrics.csv")
+        with open(convergence_file, 'w') as f:
+            f.write("Iteration,MinDistance,AvgDistance,CenterDistance\n")
+        
         for iteration in range(self.optimization_iterations):
             # Generate current patterns
             patterns = [self._generate_wave_pattern(cwle) for cwle in cwles]
@@ -402,10 +428,14 @@ class CWLEGenerator:
             com_distance = np.linalg.norm(com - center_of_space)
             self.center_distances.append(com_distance)
             
-            # Print progress
+            # Log progress to convergence file
+            with open(convergence_file, 'a') as f:
+                f.write(f"{iteration},{min_dist},{avg_dist},{com_distance}\n")
+            
+            # Log progress
             if iteration % 10 == 0:
-                print(f"Iteration {iteration}, Min distance: {min_dist:.4f}, Avg distance: {avg_dist:.4f}")
-                print(f"Center of mass distance from center: {com_distance:.4f}")
+                self.logger.info(f"Iteration {iteration}, Min distance: {min_dist:.4f}, Avg distance: {avg_dist:.4f}")
+                self.logger.info(f"Center of mass distance from center: {com_distance:.4f}")
             
             # Calculate forces for each pattern
             forces = self._calculate_forces(patterns, dist_matrix)
@@ -420,8 +450,29 @@ class CWLEGenerator:
             # Update CWLEs
             cwles = new_cwles
         
+        # Calculate total optimization time
+        end_time = time.time()
+        total_time = end_time - start_time
+        time_per_iteration = total_time / self.optimization_iterations
+        
+        self.logger.info(f"Optimization completed in {total_time:.2f} seconds")
+        self.logger.info(f"Average time per iteration: {time_per_iteration:.4f} seconds")
+        
+        # Save final convergence metrics
+        final_metrics = {
+            "min_distance": float(self.min_distances[-1]),
+            "avg_distance": float(self.avg_distances[-1]),
+            "center_distance": float(self.center_distances[-1]),
+            "optimization_time": float(total_time),
+            "time_per_iteration": float(time_per_iteration)
+        }
+        metrics_file = os.path.join(self.output_dir, "final_metrics.json")
+        with open(metrics_file, 'w') as f:
+            import json
+            json.dump(final_metrics, f, indent=4)
+        
         return cwles
-    
+        
     def visualize_patterns(self, patterns, filename=None):
         """
         Visualize the generated patterns.
@@ -447,7 +498,7 @@ class CWLEGenerator:
         
         if filename:
             plt.savefig(filename)
-            print(f"Visualization saved to {filename}")
+            self.logger.info(f"Visualization saved to {filename}")
         else:
             plt.show()
     
@@ -481,7 +532,7 @@ class CWLEGenerator:
         
         if filename:
             plt.savefig(filename)
-            print(f"Convergence plot saved to {filename}")
+            self.logger.info(f"Convergence plot saved to {filename}")
         else:
             plt.show()
 

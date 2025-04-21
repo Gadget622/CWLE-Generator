@@ -3,3 +3,5 @@ cwle_convergence.png
 cwles.json
 __pycache__/*
 .ignore/*
+.output/*
+*.bat

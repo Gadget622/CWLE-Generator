@@ -220,6 +220,75 @@ The package includes tools to visualize:
 - Convergence metrics during optimization
 - 2D projection using t-SNE for comparison with handcrafted encodings
 
+## Output Organization
+
+CWLE Generator now organizes all outputs into timestamped directories for better tracking and reproducibility.
+
+### Directory Structure
+
+Each run creates a new timestamped directory under the `output` folder:
+
+```
+output/
+└── execution_YYYYMMDD_HHMMSS/
+    ├── execution.log            # Complete log of the execution
+    ├── config_used.yaml         # The config actually used (with command-line overrides)
+    ├── cwles.json               # Generated CWLE parameters
+    ├── cwle_patterns.png        # Visualization of the patterns
+    ├── cwle_convergence.png     # Convergence metrics plot
+    ├── convergence_metrics.csv  # Detailed convergence data for each iteration
+    ├── final_metrics.json       # Final optimization metrics
+    ├── distance_analysis.txt    # Text report of pattern distances
+    ├── distance_matrix.npy      # Numpy array of distances between patterns
+    └── tsne_visualization.png   # t-SNE visualization (if run)
+```
+
+### Logging System
+
+The execution log captures:
+
+1. **Command Information**:
+   - The exact command used to run the script
+   - All command-line arguments
+   
+2. **Configuration**:
+   - Complete configuration settings used
+   - Any overrides applied via command line
+
+3. **Execution Progress**:
+   - Initialization steps
+   - Optimization iterations
+   - Final metrics
+   
+4. **Results and Outputs**:
+   - Paths to all generated files
+   - Summary of key metrics
+
+### Example Output Log
+
+```
+2023-10-15 14:32:01 - root - INFO - Command: python run_generator.py --visualize --seed 42
+2023-10-15 14:32:01 - root - INFO - Arguments: Namespace(config='cwle_config.yaml', output='cwles.json', visualize=True, no_convergence=False, compare=None, seed=42)
+2023-10-15 14:32:01 - root - INFO - Output directory: output/execution_20231015_143201
+2023-10-15 14:32:01 - root - INFO - Setting random seed to 42 (from command line)
+2023-10-15 14:32:01 - __main__ - INFO - Initializing CWLE Generator...
+2023-10-15 14:32:01 - __main__ - INFO - Configuration loaded from output/execution_20231015_143201/temp_config.yaml
+2023-10-15 14:32:01 - __main__ - INFO - Using random seed: 42
+2023-10-15 14:32:01 - __main__ - INFO - Initialized 10 CWLEs with 1 waves each
+2023-10-15 14:32:01 - __main__ - INFO - Starting optimization with 1000 iterations
+2023-10-15 14:32:01 - __main__ - INFO - Iteration 0, Min distance: 0.1234, Avg distance: 0.2345
+...
+```
+
+### Benefits
+
+This structured output approach provides several advantages:
+
+1. **Reproducibility**: Each run's parameters are preserved
+2. **Traceability**: Clear logs of execution history
+3. **Comparison**: Easy side-by-side analysis of different runs
+4. **Data Preservation**: All intermediate and final results are saved
+
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.

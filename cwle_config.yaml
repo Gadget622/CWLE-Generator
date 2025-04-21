@@ -3,7 +3,7 @@
 # Basic Parameters
 num_classes: 10         # Number of classes to generate CWLEs for
 img_size: 32           # Image size (width/height) - e.g., 28 for MNIST, 32 for CIFAR-10
-num_waves_per_cwle: 1   # Number of waves per CWLE
+num_waves_per_cwle: 3   # Number of waves per CWLE
 random_seed: 42         # Random seed for reproducibility (set to null for random behavior)
 
 # Parameter Constraints
@@ -17,7 +17,7 @@ constraints:
 
 # Optimization Parameters
 optimization:
-  iterations: 1000       # Number of optimization iterations
+  iterations: 10000       # Number of optimization iterations
   step_size: 0.05       # Step size for parameter updates
   
   # Force parameters (learning rates for each force)
